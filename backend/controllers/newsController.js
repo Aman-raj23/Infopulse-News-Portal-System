@@ -176,28 +176,40 @@ const getTopHeadlines = async (req, res, next) => {
       });
     }
 
-    const params = {
-      page,
-      pageSize,
-      country
-    };
-
-    let data = await fetchFromNewsAPI({
-      endpoint: '/top-headlines',
-      params
-    });
-
-    if ((data.totalResults === 0 || !data.articles?.length) && country) {
-      console.warn(`No articles returned for country=${country}. Falling back to global headlines.`);
+    let data;
+    if (country === 'in') {
       data = await fetchFromNewsAPI({
         endpoint: '/top-headlines',
-        params: { page, pageSize }
+        params: {
+          page,
+          pageSize,
+          sources: 'google-news-in,the-hindu,the-times-of-india'
+        }
       });
+    } else {
+      const params = {
+        page,
+        pageSize,
+        country
+      };
+
+      data = await fetchFromNewsAPI({
+        endpoint: '/top-headlines',
+        params
+      });
+
+      if ((data.totalResults === 0 || !data.articles?.length) && country) {
+        console.warn(`No articles returned for country=${country}. Falling back to global headlines.`);
+        data = await fetchFromNewsAPI({
+          endpoint: '/top-headlines',
+          params: { page, pageSize }
+        });
+      }
     }
 
     const articles = await upsertArticles({
       articles: data.articles,
-      country: (data.totalResults === 0 || !data.articles?.length) ? null : country,
+      country: country === 'in' ? 'in' : ((data.totalResults === 0 || !data.articles?.length) ? null : country),
       category: null,
       query: null
     });
@@ -244,20 +256,34 @@ const getNewsByCategory = async (req, res, next) => {
       });
     }
 
-    const params = {
-      category: normalizedCategory,
-      page,
-      pageSize
-    };
+    let data;
+    if (country === 'in') {
+      data = await fetchFromNewsAPI({
+        endpoint: '/everything',
+        params: {
+          sources: 'google-news-in,the-hindu,the-times-of-india',
+          q: normalizedCategory,
+          sortBy: 'publishedAt',
+          page,
+          pageSize
+        }
+      });
+    } else {
+      const params = {
+        category: normalizedCategory,
+        page,
+        pageSize
+      };
 
-    if (country) {
-      params.country = country;
+      if (country) {
+        params.country = country;
+      }
+
+      data = await fetchFromNewsAPI({
+        endpoint: '/top-headlines',
+        params
+      });
     }
-
-    const data = await fetchFromNewsAPI({
-      endpoint: '/top-headlines',
-      params
-    });
 
     const articles = await upsertArticles({
       articles: data.articles,

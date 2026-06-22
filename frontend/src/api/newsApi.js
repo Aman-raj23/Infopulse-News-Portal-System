@@ -13,9 +13,13 @@ export const fetchTopHeadlines = async ({ page = 1, pageSize = 12, country } = {
   return data;
 };
 
-export const fetchByCategory = async (category, { page = 1, pageSize = 12 } = {}) => {
+export const fetchByCategory = async (category, { page = 1, pageSize = 12, country } = {}) => {
+  const params = { page, pageSize };
+  if (country) {
+    params.country = country;
+  }
   const { data } = await client.get(`/category/${encodeURIComponent(category)}`, {
-    params: { page, pageSize }
+    params
   });
   return data;
 };

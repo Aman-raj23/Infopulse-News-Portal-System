@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { fetchTopHeadlines } from '../api/newsApi.js';
 import NewsGrid from '../components/NewsGrid.jsx';
 import LoadingSkeleton from '../components/LoadingSkeleton.jsx';
+import { useCountry } from '../context/CountryContext.jsx';
 
 const HomePage = () => {
+  const { country } = useCountry();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [country, setCountry] = useState('us');
 
   useEffect(() => {
     setPage(1);
@@ -56,25 +57,6 @@ const HomePage = () => {
           <div className="flex items-center gap-2">
             <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500" />
             <span>Live feed • auto-cached to minimize API usage</span>
-          </div>
-          <div className="flex gap-2 rounded-full bg-white/80 p-1 text-[0.7rem] shadow-sm ring-1 ring-slate-200 dark:bg-slate-900/70 dark:ring-slate-700">
-            {[
-              { value: 'us', label: 'United States' },
-              { value: 'in', label: 'India' }
-            ].map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setCountry(option.value)}
-                className={`rounded-full px-3 py-1 font-semibold transition ${
-                  country === option.value
-                    ? 'bg-gradient-to-tr from-brand to-brand-light text-white shadow-card'
-                    : 'text-slate-500 hover:text-brand dark:text-slate-300 dark:hover:text-brand-light'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
           </div>
         </div>
       </section>

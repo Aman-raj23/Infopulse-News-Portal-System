@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext.jsx';
+import { useCountry } from '../context/CountryContext.jsx';
 
 const categories = ['business', 'sports', 'technology', 'health', 'entertainment', 'science'];
 
 const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
+  const { country, setCountry } = useCountry();
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -143,6 +145,26 @@ const Navbar = () => {
             Search
           </button>
         </form>
+
+        <div className="flex gap-1 rounded-full bg-white/80 p-1 text-[0.7rem] shadow-sm ring-1 ring-slate-200 dark:bg-slate-900/70 dark:ring-slate-700">
+          {[
+            { value: 'in', label: '🇮🇳 IN' },
+            { value: 'us', label: '🇺🇸 US' }
+          ].map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setCountry(option.value)}
+              className={`rounded-full px-2.5 py-1 font-semibold transition ${
+                country === option.value
+                  ? 'bg-gradient-to-tr from-brand to-brand-light text-white shadow-card'
+                  : 'text-slate-500 hover:text-brand dark:text-slate-300 dark:hover:text-brand-light'
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
 
         <button
           type="button"
