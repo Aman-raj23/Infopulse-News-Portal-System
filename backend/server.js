@@ -23,7 +23,6 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Routes
 const newsRoutes = require('./routes/newsRoutes');
 
 app.use('/api/news', newsRoutes);
@@ -31,6 +30,7 @@ app.use('/api/news', newsRoutes);
 app.get('/', (req, res) => {
   res.json({ status: 'OK', message: 'InfoPulse API is running' });
 });
+
 
 // Error handling middleware
 app.use(notFound);
