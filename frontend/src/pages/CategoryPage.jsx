@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom';
 import { fetchByCategory } from '../api/newsApi.js';
 import NewsGrid from '../components/NewsGrid.jsx';
 import LoadingSkeleton from '../components/LoadingSkeleton.jsx';
+import { useCountry } from '../context/CountryContext.jsx';
 
 const CategoryPage = () => {
   const { category } = useParams();
+  const { country } = useCountry();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,7 +16,7 @@ const CategoryPage = () => {
 
   useEffect(() => {
     setPage(1);
-  }, [category]);
+  }, [category, country]);
 
   useEffect(() => {
     let isMounted = true;
@@ -23,7 +25,7 @@ const CategoryPage = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await fetchByCategory(category, { page, pageSize: 12 });
+        const data = await fetchByCategory(category, { page, pageSize: 12, country });
         if (!isMounted) return;
         setArticles(data.articles || []);
         setHasMore((data.totalResults || 0) > page * 12);
@@ -40,7 +42,7 @@ const CategoryPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [category, page]);
+  }, [category, page, country]);
 
   const label = category.charAt(0).toUpperCase() + category.slice(1);
 
