@@ -243,13 +243,7 @@ const Navbar = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="flex gap-2">
-            <input
-              type="search"
-              placeholder="Search news..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-full border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-brand/10 transition focus:border-brand focus:ring-2 dark:border-slate-800 dark:bg-slate-900"
-            />
+            
             <button
               type="submit"
               className="shrink-0 rounded-full bg-gradient-to-tr from-brand to-brand-light px-4 py-2 text-xs font-semibold text-white shadow-card"
